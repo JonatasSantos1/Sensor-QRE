@@ -4,25 +4,47 @@
 
 int pinos[NUM_SENSORES] = {1, 2, 4, 5, 6, 7, 8, 9};
 
+int ultimaLeitura[NUM_SENSORES];
+
 void setup() {
   Serial.begin(115200);
-  analogReadResolution(12); // 0 a 4095 (ESP32)
+  analogReadResolution(12);
+
+  for (int i = 0; i < NUM_SENSORES; i++) {
+    ultimaLeitura[i] = 0;
+  }
 }
 
 void loop() {
 
   for (int i = 0; i < NUM_SENSORES; i++) {
+
     int leitura = analogRead(pinos[i]);
 
-    Serial.print(leitura);
+    int diferenca = abs(leitura - ultimaLeitura[i]);
 
-    // separador para o Serial Plotter
+    // ===== DETECÇÃO DE SENSOR DESCONECTADO =====
+    bool desconectado = false;
+
+    if (diferenca > 1000) { // limiar ajustável
+      desconectado = true;
+    }
+
+    // ===== SAÍDA =====
+    if (desconectado) {
+      Serial.print("X");  // marca erro
+    } else {
+      Serial.print(leitura);
+    }
+
+    ultimaLeitura[i] = leitura;
+
     if (i < NUM_SENSORES - 1) {
       Serial.print(",");
     }
   }
 
-  Serial.println(); // nova linha
+  Serial.println();
 
-  delay(10); // ~100Hz
+  delay(10);
 }
