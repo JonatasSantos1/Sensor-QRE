@@ -42,14 +42,14 @@ void loop() {
 
     int diferenca = abs(leitura - ultimaLeitura[i]);
 
-    // DETECÇÃO DE SENSOR DESCONECTADO 
+    // DETECÇÃO DE SENSOR DESCONECTADO
     bool desconectado = false;
 
     if (diferenca > 1000) {
       desconectado = true;
     }
 
-    // SAÍDA 
+    // SAÍDA
     Serial.print("P_D");
     Serial.print(i + 1);
     Serial.print(": ");
